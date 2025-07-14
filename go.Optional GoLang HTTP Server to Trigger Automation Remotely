@@ -1,0 +1,19 @@
+package main
+
+import (
+	"fmt"
+	"net/http"
+)
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Automation Triggered!")
+	go func() {
+		// Place automation/processing logic here
+		fmt.Println("Running background process...")
+	}()
+}
+
+func main() {
+	http.HandleFunc("/trigger", handler)
+	http.ListenAndServe(":8080", nil)
+}

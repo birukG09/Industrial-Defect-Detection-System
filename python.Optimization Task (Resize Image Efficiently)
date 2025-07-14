@@ -1,0 +1,9 @@
+from PIL import Image
+
+def optimize_image(input_path, output_path, size=(800, 600)):
+    img = Image.open(input_path)
+    img.thumbnail(size, Image.LANCZOS)
+    img.save(output_path, optimize=True, quality=85)
+
+if __name__ == "__main__":
+    optimize_image('input.jpg', 'output_optimized.jpg')

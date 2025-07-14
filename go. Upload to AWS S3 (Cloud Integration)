@@ -1,0 +1,45 @@
+go
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
+)
+
+func main() {
+	file, err := os.Open("processed_image.jpg")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	fileInfo, _ := file.Stat()
+	size := fileInfo.Size()
+	buffer := make([]byte, size)
+	file.Read(buffer)
+
+	sess, _ := session.NewSession(&aws.Config{
+		Region: aws.String("us-east-1"),
+	})
+	svc := s3.New(sess)
+
+	bucket := "your-bucket-name"
+	key := "uploads/processed_image.jpg"
+
+	_, err = svc.PutObject(&s3.PutObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(key),
+		Body:   bytes.NewReader(buffer),
+		ACL:    aws.String("public-read"),
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("File uploaded to %s/%s\n", bucket, key)
+}

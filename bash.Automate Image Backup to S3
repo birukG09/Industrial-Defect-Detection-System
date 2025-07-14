@@ -1,0 +1,6 @@
+#!/bin/bash
+
+FILE=$1
+BUCKET_NAME="your-bucket-name"
+aws s3 cp "$FILE" "s3://$BUCKET_NAME/backups/$(basename $FILE)" --acl public-read
+echo "File $FILE uploaded to S3 bucket $BUCKET_NAME"
